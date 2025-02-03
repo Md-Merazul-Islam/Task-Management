@@ -26,3 +26,20 @@ login : /api/v1/auth/login/
     "username": "mdmerazul75@gmail.com",
     "password": "meraz1234"
 }
+
+
+
+
+Task :  /api/v1/task/tasks/
+
+{
+    "title": "",
+    "description": "",
+    "due_date": null,
+    "priority": null,
+    "status": null,
+    "category": "",
+    "tags": "",
+    "media": null,
+    "created_by": null
+}

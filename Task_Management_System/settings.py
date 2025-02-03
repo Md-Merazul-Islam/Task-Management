@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'auths',
     'rest_framework_simplejwt',
+    'task',
 
 ]
 

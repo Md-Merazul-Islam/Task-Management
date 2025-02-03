@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .media {
+            max-width: 100px;
+            height: auto;
+        }
+        .task-btn {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .task-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Task List</h1>
+    <table id="task-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Due Date</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Category</th>
+                <th>Tags</th>
+                <th>Media</th>
+                <th>Created By</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Tasks will be inserted here dynamically -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Fetch task data from API
+        fetch('http://127.0.0.1:8000/api/v1/task/tasks/')
+            .then(response => response.json())
+            .then(data => {
+                const taskTableBody = document.querySelector('#task-table tbody');
+                data.forEach(task => {
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td>${task.title}</td>
+                        <td>${task.description}</td>
+                        <td>${task.due_date}</td>
+                        <td>${task.priority}</td>
+                        <td>${task.status}</td>
+                        <td>${task.category}</td>
+                        <td>${task.tags}</td>
+                        <td><img src="${task.media}" alt="Media" class="media"></td>
+                        <td>User ${task.created_by}</td>
+                    `;
+                    
+                    taskTableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error fetching tasks:', error));
+    });
+</script>
+
+</body>
+</html>

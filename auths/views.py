@@ -35,7 +35,7 @@ class RegisterView(generics.CreateAPIView):
 
     def create(self, request):
         response = super().create(request)
-        return success_response("User registered successfully", response.data, status.HTTP_201_CREATED)
+        return success_response("User registered successfully",  status.HTTP_201_CREATED)
 
 
 class LoginView(generics.CreateAPIView):
@@ -59,7 +59,7 @@ class LoginView(generics.CreateAPIView):
                 login(request, user)
                 refresh = RefreshToken.for_user(user)
                 return success_response("User logged in successfully", {
-                    "user": UserSerializer(user).data,
+                    # "user": UserSerializer(user).data,
                     # "refresh": str(refresh),
                     "access": str(refresh.access_token)
                 })
