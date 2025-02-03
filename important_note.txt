@@ -1,0 +1,28 @@
+superuser : 
+    username :   
+    password : 123456
+
+
+BaseURL : http://127.0.0.1:8000
+
+auth : 
+reguster : /api/v1/auth/register/
+
+input : 
+
+{
+    "first_name": "md merazl",
+    "last_name": "Islam",
+    "username": "merazul",
+    "email": "mdmerazul75@gmail.com",
+    "password": "meraz1234",
+    "confirm_password": "meraz1234"
+}
+
+
+login : /api/v1/auth/login/
+
+{
+    "username": "mdmerazul75@gmail.com",
+    "password": "meraz1234"
+}
