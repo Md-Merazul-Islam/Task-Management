@@ -121,7 +121,7 @@
             if (response.ok) {
                 // Display the user input and the generated content from the Gemini API
                 responseDiv.innerHTML = `
-                    <strong>Your Input:</strong><br>${data.user_input || 'No input provided.'}<br><br>
+                    <strong style="text:"right";>Your Input:</strong><br>${data.user_input || 'No input provided.'}<br><br>
                     <strong>Generated Content:</strong><br><pre>${generatedText || 'No content generated.'}</pre>
                 `;
             } else {
@@ -142,5 +142,45 @@
 </html>
 
 
+<!-- 
 
-
+{
+    "project_name": "New Medical Device Development",
+    "objective": "Launch a new healthcare device within 6 months",
+    "duration": "6 months",
+    "phases": [
+      {
+        "name": "Planning",
+        "start_date": "2025-01-01",
+        "end_date": "2025-01-31"
+      },
+      {
+        "name": "Design & Prototyping",
+        "start_date": "2025-02-01",
+        "end_date": "2025-03-31"
+      },
+      {
+        "name": "Testing & QA",
+        "start_date": "2025-04-01",
+        "end_date": "2025-04-30"
+      },
+      {
+        "name": "Review & Approval",
+        "start_date": "2025-05-01",
+        "end_date": "2025-05-15"
+      }
+    ],
+    "resources": {
+      "engineers": 5,
+      "designers": 2,
+      "budget": 100000,
+      "external_testing_vendor": true
+    },
+    "challenges": [
+      "External vendor may delay testing",
+      "Engineers are overloaded in Phase 2"
+    ],
+    "developer_prompt": "Give me a suggestion on how to handle potential delays or risks in the project and recommend optimizations. Also, suggest how resources should be allocated to minimize delays and optimize productivity."
+   
+  }
+   -->

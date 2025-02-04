@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Optimization</title>
+    <script>
+        async function submitForm(event) {
+            event.preventDefault();
+
+            const project_name = document.getElementById('project_name').value;
+            const objective = document.getElementById('objective').value;
+
+            const phases = [
+                {name: document.getElementById('phase1_name').value, start_date: document.getElementById('phase1_start').value, end_date: document.getElementById('phase1_end').value},
+                {name: document.getElementById('phase2_name').value, start_date: document.getElementById('phase2_start').value, end_date: document.getElementById('phase2_end').value},
+                {name: document.getElementById('phase3_name').value, start_date: document.getElementById('phase3_start').value, end_date: document.getElementById('phase3_end').value},
+                {name: document.getElementById('phase4_name').value, start_date: document.getElementById('phase4_start').value, end_date: document.getElementById('phase4_end').value}
+            ];
+
+            const resources = {
+                developers: parseInt(document.getElementById('developers').value),
+                designers: parseInt(document.getElementById('designers').value),
+                budget: parseInt(document.getElementById('budget').value),
+                external_testing_vendor: document.getElementById('external_testing_vendor').checked
+            };
+
+            const challenges = [
+                document.getElementById('challenge1').value,
+                document.getElementById('challenge2').value
+            ];
+
+            const data = {
+                project_name,
+                objective,
+                phases,
+                resources,
+                challenges,
+                developer_prompt: "Give me a suggestion on how to handle potential delays or risks in the project and recommend optimizations. Also, suggest how resources should be allocated to minimize delays and optimize productivity."
+            };
+            console.log(data);
+            
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/v1/open-ai/optimize-ai/', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data),
+                });
+
+                const result = await response.json();
+                const textResult = result.generated_content.candidates[0].content.parts[0].text;
+                
+                document.getElementById('response').innerHTML = response.ok ?
+                    `<h3>Response from Gemini:</h3><pre>${textResult || 'No input provided'}</pre>` :
+                    `<h3>Error:</h3><p>${result.error}</p>`;
+            } catch (error) {
+                document.getElementById('response').innerHTML = `<h3>Error:</h3><p>There was an error sending the request.</p>`;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Project Optimization</h1>
+    <form onsubmit="submitForm(event)">
+        <label for="project_name">Project Name:</label>
+        <input type="text" id="project_name" value="Restaurant Management" required><br><br>
+    
+        <label for="objective">Objective:</label>
+        <input type="text" id="objective" value="To streamline operations and improve customer service" required><br><br>
+    
+        <h3>Phases</h3>
+        <label for="phase1_name">Phase 1 Name:</label>
+        <input type="text" id="phase1_name" value="Planning" required><br><br>
+        <label for="phase1_start">Phase 1 Start Date:</label>
+        <input type="date" id="phase1_start" value="2024-08-01" required><br><br>
+        <label for="phase1_end">Phase 1 End Date:</label>
+        <input type="date" id="phase1_end" value="2024-08-10" required><br><br>
+    
+        <label for="phase2_name">Phase 2 Name:</label>
+        <input type="text" id="phase2_name" value="Menu Development" required><br><br>
+        <label for="phase2_start">Phase 2 Start Date:</label>
+        <input type="date" id="phase2_start" value="2024-08-11" required><br><br>
+        <label for="phase2_end">Phase 2 End Date:</label>
+        <input type="date" id="phase2_end" value="2024-08-25" required><br><br>
+    
+        <label for="phase3_name">Phase 3 Name:</label>
+        <input type="text" id="phase3_name" value="Staff Hiring" required><br><br>
+        <label for="phase3_start">Phase 3 Start Date:</label>
+        <input type="date" id="phase3_start" value="2024-08-26" required><br><br>
+        <label for="phase3_end">Phase 3 End Date:</label>
+        <input type="date" id="phase3_end" value="2024-09-05" required><br><br>
+    
+        <label for="phase4_name">Phase 4 Name:</label>
+        <input type="text" id="phase4_name" value="Restaurant Opening" required><br><br>
+        <label for="phase4_start">Phase 4 Start Date:</label>
+        <input type="date" id="phase4_start" value="2024-09-06" required><br><br>
+        <label for="phase4_end">Phase 4 End Date:</label>
+        <input type="date" id="phase4_end" value="2024-09-20" required><br><br>
+    
+        <h3>Resources</h3>
+        <label for="developers">Number of Developers:</label>
+        <input type="number" id="developers" value="0" required><br><br>
+    
+        <label for="designers">Number of Designers:</label>
+        <input type="number" id="designers" value="2" required><br><br>
+    
+        <label for="budget">Budget ($):</label>
+        <input type="number" id="budget" value="50000" required><br><br>
+    
+        <label for="external_testing_vendor">External Testing Vendor:</label>
+        <input type="checkbox" id="external_testing_vendor" checked><br><br>
+    
+        <h3>Challenges</h3>
+        <label for="challenge1">Challenge 1:</label>
+        <input type="text" id="challenge1" value="Staff Training" required><br><br>
+    
+        <label for="challenge2">Challenge 2:</label>
+        <input type="text" id="challenge2" value="Inventory Management" required><br><br>
+    
+        <button type="submit">Submit</button>
+    </form>
+    
+    <div id="response"></div>
+</body>
+</html>
