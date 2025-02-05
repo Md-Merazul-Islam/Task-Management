@@ -66,18 +66,23 @@ class ProjectOptimizationAPIView(APIView):
     **Request:**
     Suggest strategies to mitigate delays and risks while optimizing my entire plan. Ensure suggestions are 99.99% accurate and practical. Provide a concise yet highly effective response.
 
-    Do you give me answers like this:
-        {{
-        "predicted_risks": [
-            **text**  # Text to be made strong here if detected
-        ],
-        "resource_optimization": {{
-            "....."
-        }},
-        "governance_recommendations": {{
-            "...."
-        }}
-        }}
+    Do you give me answers like this here main point will be strong or bold front and other will be normal front.:
+
+        "predicted_risks":\n
+
+        "delay_optimization":\n
+
+        "cost_optimization":\n
+
+        "Phases Optimized":\n
+
+        "project_management_optimization":\n
+
+        "resource_optimization":\n
+
+        "governance_recommendations":\n
+
+
 """
 
         print(prompt)
