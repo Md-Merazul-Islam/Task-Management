@@ -3,114 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task List</title>
+    <title>AI Content Generator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             background-color: #f4f4f9;
         }
         .container {
-            width: 80%;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        table {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
         }
-        table, th, td {
+        .container h1 {
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 4px;
             border: 1px solid #ddd;
+            resize: vertical;
         }
-        th, td {
+        .form-group button {
+            width: 100%;
             padding: 12px;
-            text-align: left;
-        }
-        th {
-            background-color: #007bff;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .media {
-            max-width: 100px;
-            height: auto;
-        }
-        .task-btn {
-            padding: 5px 10px;
-            background-color: #007bff;
+            background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
+            font-size: 16px;
             cursor: pointer;
         }
-        .task-btn:hover {
-            background-color: #0056b3;
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 4px;
+        }
+        .response pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Task List</h1>
-    <table id="task-table">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Due Date</th>
-                <th>Priority</th>
-                <th>Status</th>
-                <th>Category</th>
-                <th>Tags</th>
-                <th>Media</th>
-                <th>Created By</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Tasks will be inserted here dynamically -->
-        </tbody>
-    </table>
+    <h1>AI Content Generator</h1>
+    <form id="aiForm">
+        <div class="form-group">
+            <label for="text">Enter text for AI generation:</label>
+            <textarea id="text" name="text" rows="4" placeholder="Enter a prompt..."></textarea>
+        </div>
+        <div class="form-group">
+            <button type="submit">Generate Content</button>
+        </div>
+    </form>
+
+    <div id="response" class="response" style="display:none;"></div>
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Fetch task data from API
-        fetch('http://127.0.0.1:8000/api/v1/task/tasks/')
-            .then(response => response.json())
-            .then(data => {
-                const taskTableBody = document.querySelector('#task-table tbody');
-                data.forEach(task => {
-                    const row = document.createElement('tr');
-                    
-                    row.innerHTML = `
-                        <td>${task.title}</td>
-                        <td>${task.description}</td>
-                        <td>${task.due_date}</td>
-                        <td>${task.priority}</td>
-                        <td>${task.status}</td>
-                        <td>${task.category}</td>
-                        <td>${task.tags}</td>
-                        <td><img src="${task.media}" alt="Media" class="media"></td>
-                        <td>User ${task.created_by}</td>
-                    `;
-                    
-                    taskTableBody.appendChild(row);
-                });
-            })
-            .catch(error => console.error('Error fetching tasks:', error));
+    // Get references to form and response section
+    const aiForm = document.getElementById('aiForm');
+    const responseDiv = document.getElementById('response');
+
+    // Handle form submission
+    aiForm.addEventListener('submit', async (event) => {
+        event.preventDefault(); // Prevent the default form submission
+
+        const textInput = document.getElementById('text').value.trim();
+
+        // Check if the input is empty
+        if (!textInput) {
+            alert('Please enter some text!');
+            return;
+        }
+
+        // Show a loading message
+        responseDiv.style.display = 'none';
+        responseDiv.innerHTML = 'Generating content... Please wait.';
+        responseDiv.style.display = 'block';
+
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/v1/open-ai/ai-helper/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    text: textInput,
+                }),
+            });
+
+            const data = await response.json();
+            const generatedText = data.generated_content.candidates[0].content.parts[0].text;
+            if (response.ok) {
+                // Display the user input and the generated content from the Gemini API
+                responseDiv.innerHTML = `
+                    <strong style="text:"right";>Your Input:</strong><br>${data.user_input || 'No input provided.'}<br><br>
+                    <strong>Generated Content:</strong><br><pre>${generatedText || 'No content generated.'}</pre>
+                `;
+            } else {
+                // Display error message
+                responseDiv.innerHTML = `
+                    <strong>Error:</strong> ${data.error || 'Something went wrong.'}<br>
+                    <strong>Details:</strong> ${data.details || 'No details available.'}
+                `;
+            }
+        } catch (error) {
+            // Handle network errors
+            responseDiv.innerHTML = `<strong>Error:</strong> Unable to connect to the server. Please try again later.`;
+        }
     });
 </script>
 
 </body>
 </html>
+
+
+<!-- 
+
+{
+    "project_name": "New Medical Device Development",
+    "objective": "Launch a new healthcare device within 6 months",
+    "duration": "6 months",
+    "phases": [
+      {
+        "name": "Planning",
+        "start_date": "2025-01-01",
+        "end_date": "2025-01-31"
+      },
+      {
+        "name": "Design & Prototyping",
+        "start_date": "2025-02-01",
+        "end_date": "2025-03-31"
+      },
+      {
+        "name": "Testing & QA",
+        "start_date": "2025-04-01",
+        "end_date": "2025-04-30"
+      },
+      {
+        "name": "Review & Approval",
+        "start_date": "2025-05-01",
+        "end_date": "2025-05-15"
+      }
+    ],
+    "resources": {
+      "engineers": 5,
+      "designers": 2,
+      "budget": 100000,
+      "external_testing_vendor": true
+    },
+    "challenges": [
+      "External vendor may delay testing",
+      "Engineers are overloaded in Phase 2"
+    ],
+    "developer_prompt": "Give me a suggestion on how to handle potential delays or risks in the project and recommend optimizations. Also, suggest how resources should be allocated to minimize delays and optimize productivity."
+   
+  }
+   -->

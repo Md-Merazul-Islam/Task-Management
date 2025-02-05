@@ -12,7 +12,6 @@ from .models import Task
 from .serializers import TaskSerializer
 
 User = get_user_model()
-
 # Max file size (5MB)
 MAX_SIZE = 5 * 1024 * 1024
 
